@@ -1,3 +1,5 @@
+import { getSpecialDaysForMonth } from './special-days.js';
+
 // DOM elements
 const prevMonthBtn = document.getElementById('prev-month-btn');
 const nextMonthBtn = document.getElementById('next-month-btn');
@@ -13,12 +15,15 @@ const monthNames = [
 ];
 
 // Renders the calendar for a given month and year
-function renderCalendar(year, month) {
+async function renderCalendar(year, month) {
   calendarGrid.innerHTML = '';
   
   // Update the dropdowns to show the current date
   monthSelect.value = month;
   yearSelect.value = year;
+
+  // Get the list of special days for the current month
+  const specialDays = await getSpecialDaysForMonth(year, month);
 
   // Get date information for the current month
   const firstDayOfMonth = new Date(year, month, 1);
@@ -43,7 +48,15 @@ function renderCalendar(year, month) {
   // Draw days for the current month
   for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
     const dayElement = document.createElement('div');
+
     dayElement.textContent = i;
+
+    // Check if the current day 'i' is a special day
+    const specialDay = specialDays.find(day => day.date.getDate() === i);
+    if (specialDay) {
+      dayElement.classList.add('special-day');
+    }
+
     calendarGrid.appendChild(dayElement);
   }
 
