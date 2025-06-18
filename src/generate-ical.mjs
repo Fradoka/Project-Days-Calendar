@@ -1,7 +1,65 @@
-// This is a placeholder file which shows how you can access functions and data defined in other files. You can delete the contents of the file once you have understood how it works.
-// It can be run with `node`.
+import fs from "fs";
+import days from "./days.json" assert { type: "json" };
+import { calculateDateForRule } from "./date-logic.js";
 
-import { getGreeting } from "./common.mjs";
-import daysData from "./days.json" assert { type: "json" };
+function formatDateToICS(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}${month}${day}`;
+}
 
-console.log(`${getGreeting()} - there are ${daysData.length} known days`);
+// UID generator using "phone" and two Math.random values
+function generateUID() {
+  return `phone-${Math.floor(Math.random() * 100000)}-${Math.floor(
+    Math.random() * 100000
+  )}-days-calendar`;
+}
+
+let ics = `BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:-//MgPhone//Days Calendar//EN
+METHOD:PUBLISH
+X-PUBLISHED-TTL:PT1H
+`;
+
+// Loop over years and days
+for (let year = 2020; year <= 2030; year++) {
+  for (const day of days) {
+    const monthIndex = new Date(`${day.monthName} 1, ${year}`).getMonth();
+    // Use calculateDateForRule to get the commemorative day
+    const rule = { ordinal: day.occurence, day: day.dayName };
+    const date = calculateDateForRule(rule, year, monthIndex);
+    let descriptionText = "";
+    try {
+      const res = await fetch(day.descriptionURL);
+      descriptionText = await res.text();
+      descriptionText = descriptionText.replace(/\r?\n/g, "\\n");
+    } catch (err) {
+      descriptionText = `Could not fetch description: ${day.descriptionURL}`;
+    }
+    const event = {
+      uid: generateUID(),
+      startDate: date,
+      summary: `${day.name} (${year})`,
+      description: descriptionText,
+    };
+
+    ics += `BEGIN:VEVENT
+UID:${event.uid}
+SUMMARY:${event.summary}
+DTSTAMP:${formatDateToICS(new Date())}T000000Z
+DTSTART;VALUE=DATE:${formatDateToICS(event.startDate)}
+DESCRIPTION:${event.description}
+END:VEVENT
+`;
+  }
+}
+
+ics += `END:VCALENDAR`;
+
+// Save to .ics file
+fs.writeFileSync("generate-ical.ics", ics.replace(/\n/g, "\r\n"));
+
+console.log("generate-ical.ics file has been generated successfully.");
