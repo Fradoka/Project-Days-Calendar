@@ -1,6 +1,7 @@
 import fs from "fs";
 import days from "./days.json" assert { type: "json" };
 import { calculateDateForRule } from "./date-logic.js";
+import { fetchDescription } from "./api.js";
 
 function formatDateToICS(date) {
   const year = date.getFullYear();
@@ -28,17 +29,13 @@ X-PUBLISHED-TTL:PT1H
 for (let year = 2020; year <= 2030; year++) {
   for (const day of days) {
     const monthIndex = new Date(`${day.monthName} 1, ${year}`).getMonth();
-    // Use calculateDateForRule to get the commemorative day
     const rule = { ordinal: day.occurence, day: day.dayName };
     const date = calculateDateForRule(rule, year, monthIndex);
-    let descriptionText = "";
-    try {
-      const res = await fetch(day.descriptionURL);
-      descriptionText = await res.text();
-      descriptionText = descriptionText.replace(/\r?\n/g, "\\n");
-    } catch (err) {
-      descriptionText = `Could not fetch description: ${day.descriptionURL}`;
-    }
+
+    // Use fetchDescription instead of manual fetch & try/catch
+    let descriptionText = await fetchDescription(day.descriptionURL);
+    descriptionText = descriptionText.replace(/\r?\n/g, "\\n");
+
     const event = {
       uid: generateUID(),
       startDate: date,
