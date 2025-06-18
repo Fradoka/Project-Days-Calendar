@@ -1,4 +1,5 @@
 import { getSpecialDaysForMonth } from './special-days.js';
+import { fetchDescription } from './api.js';
 
 // DOM elements
 const prevMonthBtn = document.getElementById('prev-month-btn');
@@ -7,6 +8,10 @@ const monthSelect = document.getElementById('month-select');
 const yearSelect = document.getElementById('year-select');
 const goBtn = document.getElementById('go-btn');
 const calendarGrid = document.getElementById('calendar-grid');
+const descriptionModal = document.getElementById('description-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalDescription = document.getElementById('modal-description');
+const closeModalBtn = document.getElementById('close-modal-btn');
 
 let currentDate = new Date();
 const monthNames = [
@@ -55,6 +60,16 @@ async function renderCalendar(year, month) {
     const specialDay = specialDays.find(day => day.date.getDate() === i);
     if (specialDay) {
       dayElement.classList.add('special-day');
+
+      // Store the special day's data directly on the element
+      dayElement.dataset.name = specialDay.name;
+      dayElement.dataset.descriptionURL = specialDay.descriptionURL;
+
+      // Create and append the tooltip element
+      const tooltip = document.createElement('span');
+      tooltip.classList.add('tooltip');
+      tooltip.textContent = specialDay.name;
+      dayElement.appendChild(tooltip);
     }
 
     calendarGrid.appendChild(dayElement);
@@ -103,6 +118,50 @@ goBtn.addEventListener('click', () => {
   const selectedMonth = parseInt(monthSelect.value, 10);
   currentDate = new Date(selectedYear, selectedMonth, 1);
   renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+});
+
+// A single listener on the grid to handle clicks on special days
+calendarGrid.addEventListener('click', async (event) => {
+  // Check if the clicked element is a special day
+  const clickedDay = event.target.closest('.special-day');
+
+  if (clickedDay) {
+    // Retrieve the data we stored on the element
+    const name = clickedDay.dataset.name;
+    const url = clickedDay.dataset.descriptionURL;
+
+    // Show a loading state in the modal
+    modalTitle.textContent = name;
+    modalDescription.textContent = "Loading...";
+    descriptionModal.classList.remove('hidden');
+
+    // Fetch the real description
+    const description = await fetchDescription(url);
+
+    // Update the modal with the fetched content
+    modalDescription.textContent = description;
+  }
+});
+
+// Event listeners to close the modal
+function closeModal() {
+  descriptionModal.classList.add('hidden');
+}
+
+closeModalBtn.addEventListener('click', closeModal);
+
+descriptionModal.addEventListener('click', (event) => {
+  // If the click is on the dark overlay itself, close the modal
+  if (event.target === descriptionModal) {
+    closeModal();
+  }
+});
+
+// Close modal with the 'Escape' key
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !descriptionModal.classList.contains('hidden')) {
+    closeModal();
+  }
 });
 
 function init() {
