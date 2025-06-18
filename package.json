@@ -6,7 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fradoka/Project-Days-Calendar.git"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Fradoka/Project-Days-Calendar/issues"
+  },
+  "homepage": "https://github.com/Fradoka/Project-Days-Calendar#readme"
 }
