@@ -130,4 +130,76 @@ body {
   border-color: #91d5ff;
   font-weight: bold;
   color: #0056b3;
+  position: relative;
+}
+
+/* The actual tooltip bubble (hidden by default) */
+.special-day .tooltip {
+  visibility: hidden; 
+  opacity: 0; /* Make it transparent */
+  
+  width: max-content; /* Make the width fit the content */
+  max-width: 150px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  
+  /* Position the tooltip above the day box */
+  position: absolute;
+  z-index: 1;
+  bottom: 110%; /* Place it just above the box */
+  left: 50%;
+  transform: translateX(-50%); /* Center it horizontally */
+
+  transition: opacity 0.2s;
+}
+
+/* Show the tooltip when hovering over a special day */
+.special-day:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-overlay {
+  position: fixed; /* Stays in place even if you scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensures it's on top of everything */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+#modal-title {
+  margin-top: 0;
+}
+
+/* A helper class to hide the modal */
+.hidden {
+  display: none;
 }
