@@ -1,0 +1,205 @@
+/* General Body and Font Styling */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f0f2f5;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  
+  /* Reduced the gap between the title and the calendar */
+  gap: 1.5rem; 
+}
+
+/* Page Title Styling */
+.page-title {
+  /* Slightly smaller font size for the main title */
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* The main white container for the calendar */
+.calendar-container {
+  background-color: white;
+  
+  /* Reduced the padding inside the container */
+  padding: 1.5rem; 
+  
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  
+  /* Reduced the max-width to make the calendar more compact */
+  max-width: 450px; 
+}
+
+/* Container for Jump to Date controls */
+.jump-to-date-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem; /* Reduced gap between controls */
+  margin-bottom: 1rem;
+}
+
+/* Container for Month Navigation */
+.month-navigation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+/* Common styling for all buttons and selects */
+.jump-to-date-controls select,
+.jump-to-date-controls button,
+.month-navigation-controls button {
+  /* Smaller padding and font size for a more compact look */
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.jump-to-date-controls button,
+.month-navigation-controls button:hover {
+  background-color: #f9f9f9;
+}
+
+/* Weekday headers (Mon, Tue, etc.) */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-size: 0.85rem; /* Slightly smaller font for weekdays */
+}
+
+/* The main grid for the days */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  
+  /* Reduced the gap between day boxes */
+  gap: 8px; 
+}
+
+/* Individual day boxes */
+.calendar-grid div {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Slightly smaller font size for the numbers */
+  font-size: 0.9rem;
+  
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Hover effect for days in the current month */
+.calendar-grid div:not(.other-month):hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Styling for days that are not in the current month */
+.calendar-grid .other-month {
+  color: #545454;
+  background-color: #fafafa;
+  cursor: default;
+}
+
+.special-day {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+  font-weight: bold;
+  color: #0056b3;
+  position: relative;
+}
+
+/* The actual tooltip bubble (hidden by default) */
+.special-day .tooltip {
+  visibility: hidden; 
+  opacity: 0; /* Make it transparent */
+  
+  width: max-content; /* Make the width fit the content */
+  max-width: 150px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  
+  /* Position the tooltip above the day box */
+  position: absolute;
+  z-index: 1;
+  bottom: 110%; /* Place it just above the box */
+  left: 50%;
+  transform: translateX(-50%); /* Center it horizontally */
+
+  transition: opacity 0.2s;
+}
+
+/* Show the tooltip when hovering over a special day */
+.special-day:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-overlay {
+  position: fixed; /* Stays in place even if you scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensures it's on top of everything */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+#modal-title {
+  margin-top: 0;
+}
+
+/* A helper class to hide the modal */
+.hidden {
+  display: none;
+}

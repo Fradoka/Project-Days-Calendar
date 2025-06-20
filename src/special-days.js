@@ -1,7 +1,10 @@
-import days from './days.json'; 
 import { calculateDateForRule } from './date-logic.js';
 
-export function getSpecialDaysForMonth(year, month) {
+export async function getSpecialDaysForMonth(year, month) {
+  // Fetch the JSON data
+  const response = await fetch('./src/days.json');
+  const days = await response.json(); // Parse the response as JSON
+
   // Get month name (e.g., 'October') from number
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
